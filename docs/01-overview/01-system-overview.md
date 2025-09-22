@@ -248,6 +248,66 @@ Multi-tenant avançado, multi-região, custos/showback, automações de complian
 
 * **Redução de custos** (compra e logística assertivas), **redução de atrasos**, **melhor controle de qualidade/segurança**, **menor esforço de reconciliação** (medições e faturamento), **decisões guiadas por dados** e **padronização corporativa** entre obras.
 
+## 18) Integração com Padrões de Desenvolvimento (@general/)
+
+### Estratégia de Branching e Versionamento
+- **Trunk-based Development**: Feature branches curtas (1-3 dias) com merge para `develop`
+- **Conventional Commits**: Padrão `[emoji] type(scope): description` com case insensitive
+- **Versionamento Independente**: Changesets para TypeScript, Goreleaser para Go
+- **Branch Protection**: `main` e `develop` com status checks obrigatórios
+
+### Qualidade e Segurança Integrada
+- **SAST**: CodeQL + Semgrep para análise estática
+- **SBOM**: Syft para Software Bill of Materials
+- **Image Scanning**: Trivy para vulnerabilidades em imagens Docker
+- **Dependency Review**: Dependabot + pnpm audit + govulncheck
+
+### Observabilidade e CI/CD
+- **OpenTelemetry**: SDK unificado para TypeScript e Go
+- **Stack Gratuita**: Jaeger + Prometheus + Loki + Grafana
+- **GitHub Actions**: Matriz de versões, path filters, caching estratégico
+- **Cobertura**: ≥80% (TS + Go), tempo de CI <15min
+
+### Estrutura de Desenvolvimento
+```
+obraflow/
+├── .changeset/                 # Versionamento TS
+├── .github/workflows/          # CI/CD pipelines
+├── .goreleaser.yml            # Release Go
+├── packages/libs/             # Bibliotecas compartilhadas
+├── services/                  # Microserviços Go
+└── docs/general/              # Diretrizes e padrões
+```
+
+## 19) Padrões de Aceleração (@strapi-nodered-adminlte/)
+
+### Stack de Aceleração para MVP
+- **AdminLTE 3 React**: Backoffice administrativo com componentes prontos
+- **Strapi**: Headless CMS para catálogos e configurações
+- **Node-RED**: Automações low-code e integrações
+
+### Arquitetura de Aceleração
+```
+[AdminLTE React (Backoffice)]
+      |  (JWT OIDC, RBAC)
+      v
+[BFF/API Gateway] ——> [Serviços Core (Work, Measurement, Supply)]
+      |                         |        \
+      |                         |         > [Event Bus (Kafka)]
+      |                         |                       ^
+      v                         v                       |
+[Strapi Headless CMS] ——webhooks/REST——> [Node-RED Flows]—┘
+   |   (Catálogos, Docs,         | (transformação, ETL leve, agendamentos,
+   |    Config Center, RBAC)     |  conectores SaaS/IoT, "quick automations")
+   v
+[Storage S3/DB + RLS]
+```
+
+### Regra de Ouro (DDD)
+- **Core domain** (Work Mgmt, Medição, Alocação) permanece nos **serviços de backend**
+- Strapi/Node-RED aceleram a **parte de borda** e configuração
+- Contratos governados pelos Manifestos 2/5
+
 ---
 
 Se quiser, prossigo com **(a)** um **C4-PlantUML** de Contexto/Contêiner/Componentes adaptado ao seu cenário, **(b)** os **esquemas AsyncAPI** dos eventos-chave e **(c)** um **MVP técnico** com skeleton de serviços (NestJS + Go), inclusive **Sagas/Outbox** e **pipelines de IA** (alocação) para você colar no repositório.

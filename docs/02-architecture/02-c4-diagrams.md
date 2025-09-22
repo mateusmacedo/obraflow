@@ -320,6 +320,61 @@ obraflow/
 - **Segurança**: JWT (RS256), RBAC, validação (Zod), SAST, SBOM
 - **CI/CD**: GitHub Actions com caching, path filters, previews
 
+### Integração com Padrões @general/
+
+#### Estratégia de Branching
+- **Trunk-based Development**: Feature branches curtas (1-3 dias)
+- **Conventional Commits**: `[emoji] type(scope): description` case insensitive
+- **Branch Protection**: Status checks obrigatórios em `main` e `develop`
+- **Code Review**: Checklist padronizado com foco em DDD, SOLID, segurança
+
+#### Qualidade e Segurança
+- **SAST**: CodeQL + Semgrep para análise estática
+- **SBOM**: Syft para Software Bill of Materials
+- **Image Scanning**: Trivy para vulnerabilidades em imagens Docker
+- **Dependency Review**: Dependabot + pnpm audit + govulncheck
+
+#### Observabilidade Integrada
+- **OpenTelemetry**: SDK unificado para TypeScript e Go
+- **Stack Gratuita**: Jaeger + Prometheus + Loki + Grafana
+- **Métricas**: RED/USE com exemplars para tracing
+- **Logs**: JSON estruturado com correlation_id/tenant_id/site_id
+
+#### CI/CD Avançado
+- **GitHub Actions**: Matriz de versões (Node 18/20, Go 1.21/1.22)
+- **Caching**: pnpm store, Go modules, build artifacts
+- **Path Filters**: Execução condicional baseada em arquivos alterados
+- **Jobs Paralelos**: Code Quality, Build & Test, Security, Coverage, SBOM, Deploy
+
+### Integração com Padrões de Aceleração (@strapi-nodered-adminlte/)
+
+#### Stack de Aceleração para MVP
+- **AdminLTE 3 React**: Backoffice administrativo com componentes prontos
+- **Strapi**: Headless CMS para catálogos e configurações
+- **Node-RED**: Automações low-code e integrações
+
+#### Arquitetura de Aceleração
+```
+[AdminLTE React (Backoffice)]
+      |  (JWT OIDC, RBAC)
+      v
+[BFF/API Gateway] ——> [Serviços Core (Work, Measurement, Supply)]
+      |                         |        \
+      |                         |         > [Event Bus (Kafka)]
+      |                         |                       ^
+      v                         v                       |
+[Strapi Headless CMS] ——webhooks/REST——> [Node-RED Flows]—┘
+   |   (Catálogos, Docs,         | (transformação, ETL leve, agendamentos,
+   |    Config Center, RBAC)     |  conectores SaaS/IoT, "quick automations")
+   v
+[Storage S3/DB + RLS]
+```
+
+#### Regra de Ouro (DDD)
+- **Core domain** (Work Mgmt, Medição, Alocação) permanece nos **serviços de backend**
+- Strapi/Node-RED aceleram a **parte de borda** e configuração
+- Contratos governados pelos Manifestos 2/5
+
 ---
 
 Se quiser, eu **estendo** com:

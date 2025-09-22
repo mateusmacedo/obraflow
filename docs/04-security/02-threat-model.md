@@ -471,6 +471,55 @@ obraflow/
 - **Segredos ausentes** no repositório
 - **Políticas de segurança** aplicadas via OPA/Rego
 
+## 14.1) Integração com Padrões @general/
+
+### Estratégia de Desenvolvimento Seguro
+- **Branching**: Trunk-based development com feature branches curtas (1-3 dias)
+- **Commits**: Conventional commits com emojis para identificação visual
+- **Code Review**: Checklist de segurança obrigatório em todos os PRs
+- **Versionamento**: Changesets para TypeScript, Goreleaser para Go
+
+### Qualidade e Segurança Integrada
+- **SAST**: CodeQL + Semgrep para análise estática de código
+- **SBOM**: Syft para Software Bill of Materials
+- **Image Scanning**: Trivy para vulnerabilidades em imagens Docker
+- **Dependency Review**: Dependabot + pnpm audit + govulncheck
+
+### CI/CD e Observabilidade
+- **GitHub Actions**: Matriz de versões, path filters, caching estratégico
+- **OpenTelemetry**: SDK unificado para TypeScript e Go
+- **Stack Gratuita**: Jaeger + Prometheus + Loki + Grafana
+- **Métricas**: RED/USE com exemplars para tracing
+
+### Integração com Padrões de Aceleração (@strapi-nodered-adminlte/)
+
+#### Stack de Aceleração para MVP
+- **AdminLTE 3 React**: Backoffice administrativo com componentes prontos
+- **Strapi**: Headless CMS para catálogos e configurações
+- **Node-RED**: Automações low-code e integrações
+
+#### Arquitetura de Aceleração
+```
+[AdminLTE React (Backoffice)]
+      |  (JWT OIDC, RBAC)
+      v
+[BFF/API Gateway] ——> [Serviços Core (Work, Measurement, Supply)]
+      |                         |        \
+      |                         |         > [Event Bus (Kafka)]
+      |                         |                       ^
+      v                         v                       |
+[Strapi Headless CMS] ——webhooks/REST——> [Node-RED Flows]—┘
+   |   (Catálogos, Docs,         | (transformação, ETL leve, agendamentos,
+   |    Config Center, RBAC)     |  conectores SaaS/IoT, "quick automations")
+   v
+[Storage S3/DB + RLS]
+```
+
+#### Regra de Ouro (DDD)
+- **Core domain** (Work Mgmt, Medição, Alocação) permanece nos **serviços de backend**
+- Strapi/Node-RED aceleram a **parte de borda** e configuração
+- Contratos governados pelos Manifestos 2/5
+
 ## 15) Como validar no ciclo
 
 1. Renderize os diagramas (`*.puml`).
