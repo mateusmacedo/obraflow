@@ -1,0 +1,186 @@
+# Goreleaser configuration for ObraFlow Go services
+# https://goreleaser.com/customization/
+
+project_name: obraflow
+before:
+  hooks:
+    - go mod tidy
+    - go mod verify
+
+builds:
+  - id: planning-service
+    binary: planning-service
+    main: ./services/planning-service
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+  - id: work-service
+    binary: work-service
+    main: ./services/work-service
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+  - id: resource-service
+    binary: resource-service
+    main: ./services/resource-service
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: planning-service
+    builds:
+      - planning-service
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+      - docs/
+
+  - id: work-service
+    builds:
+      - work-service
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+      - docs/
+
+  - id: resource-service
+    builds:
+      - resource-service
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+      - docs/
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+release:
+  github:
+    owner: mmanjos
+    name: obraflow
+  draft: false
+  prerelease: false
+  name_template: "Release {{ .Tag }}"
+  header: |
+    ## 🚀 ObraFlow Release {{ .Tag }}
+    
+    This release includes updates to the ObraFlow platform.
+  footer: |
+    ## 📦 Installation
+    
+    ### Go Services
+    Download the appropriate binary for your platform from the assets below.
+    
+    ### TypeScript Packages
+    Install from npm:
+    ```bash
+    npm install @obraflow/core-contracts@{{ .Tag }}
+    npm install @obraflow/core-events@{{ .Tag }}
+    # ... other packages
+    ```
+
+docker:
+  - image_templates:
+      - "ghcr.io/mmanjos/obraflow-planning-service:{{ .Tag }}"
+      - "ghcr.io/mmanjos/obraflow-planning-service:latest"
+    dockerfile: ./services/planning-service/Dockerfile
+    build_flag_templates:
+      - --label=org.opencontainers.image.title=ObraFlow Planning Service
+      - --label=org.opencontainers.image.description=Planning service for ObraFlow construction management platform
+      - --label=org.opencontainers.image.vendor=ObraFlow
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.source=https://github.com/mmanjos/obraflow
+
+  - image_templates:
+      - "ghcr.io/mmanjos/obraflow-work-service:{{ .Tag }}"
+      - "ghcr.io/mmanjos/obraflow-work-service:latest"
+    dockerfile: ./services/work-service/Dockerfile
+    build_flag_templates:
+      - --label=org.opencontainers.image.title=ObraFlow Work Service
+      - --label=org.opencontainers.image.description=Work management service for ObraFlow construction management platform
+      - --label=org.opencontainers.image.vendor=ObraFlow
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.source=https://github.com/mmanjos/obraflow
+
+  - image_templates:
+      - "ghcr.io/mmanjos/obraflow-resource-service:{{ .Tag }}"
+      - "ghcr.io/mmanjos/obraflow-resource-service:latest"
+    dockerfile: ./services/resource-service/Dockerfile
+    build_flag_templates:
+      - --label=org.opencontainers.image.title=ObraFlow Resource Service
+      - --label=org.opencontainers.image.description=Resource orchestration service for ObraFlow construction management platform
+      - --label=org.opencontainers.image.vendor=ObraFlow
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.source=https://github.com/mmanjos/obraflow
+
+docker_manifests:
+  - name_template: "ghcr.io/mmanjos/obraflow-planning-service:latest"
+    image_templates:
+      - "ghcr.io/mmanjos/obraflow-planning-service:{{ .Tag }}"
+
+  - name_template: "ghcr.io/mmanjos/obraflow-work-service:latest"
+    image_templates:
+      - "ghcr.io/mmanjos/obraflow-work-service:{{ .Tag }}"
+
+  - name_template: "ghcr.io/mmanjos/obraflow-resource-service:latest"
+    image_templates:
+      - "ghcr.io/mmanjos/obraflow-resource-service:{{ .Tag }}"

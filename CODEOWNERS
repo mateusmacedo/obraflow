@@ -1,0 +1,64 @@
+# ObraFlow - Code Owners
+# Este arquivo define quem é responsável por diferentes partes do código
+
+# Global owners (todos os arquivos)
+* @mateusmacedo
+
+# Core Libraries - Arquitetura e Fundação
+/packages/libs/core-* @mateusmacedo
+/docs/general/ @mateusmacedo
+/nx.json @mateusmacedo
+/tsconfig*.json @mateusmacedo
+/package.json @mateusmacedo
+
+# Planning Domain
+/packages/libs/planning/ @mateusmacedo
+/packages/apps/planning-* @mateusmacedo
+/services/planning-service/ @mateusmacedo
+
+# Work Management Domain
+/packages/libs/work-management/ @mateusmacedo
+/packages/apps/work-* @mateusmacedo
+/services/work-service/ @mateusmacedo
+
+# Resource Orchestration Domain
+/packages/libs/resource-orchestration/ @mateusmacedo
+/packages/apps/resource-* @mateusmacedo
+/services/resource-service/ @mateusmacedo
+
+# Procurement Domain
+/packages/libs/procurement/ @mateusmacedo
+/packages/apps/procurement-* @mateusmacedo
+/services/procurement-service/ @mateusmacedo
+
+# Quality & Safety Domain
+/packages/libs/quality-safety/ @mateusmacedo
+/packages/apps/quality-* @mateusmacedo
+/services/quality-service/ @mateusmacedo
+
+# Measurement Domain
+/packages/libs/measurement/ @mateusmacedo
+/packages/apps/measurement-* @mateusmacedo
+/services/measurement-service/ @mateusmacedo
+
+# Frontend Applications
+/packages/apps/web/ @mateusmacedo
+/packages/apps/mobile/ @mateusmacedo
+/packages/apps/bff/ @mateusmacedo
+
+# Infrastructure & DevOps
+/infrastructure/ @mateusmacedo
+/.github/ @mateusmacedo
+/docker/ @mateusmacedo
+/k8s/ @mateusmacedo
+
+# Configuration Files
+/.github/workflows/ @mateusmacedo
+/.husky/ @mateusmacedo
+/biome.json @mateusmacedo
+/commitlint.config.js @mateusmacedo
+/.changeset/ @mateusmacedo
+
+# Documentation
+/docs/ @mateusmacedo
+/README.md @mateusmacedo
