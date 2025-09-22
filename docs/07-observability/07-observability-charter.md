@@ -1,8 +1,22 @@
 # Manifesto 4 — **Observability Charter (RED/USE) + OTel Collector + Dashboards + Alertas**
 
-*(ObraFlow · pacote inicial completo, pronto para colar no repositório)*
+*(ObraFlow · pacote inicial completo, integrado com padrões do monorepo multilíngue)*
 
-A seguir entrego o **pacote base** de Observabilidade, integrando **traces, métricas e logs** com **OpenTelemetry** (apps) → **Collector** → **Tempo/Jaeger**, **Prometheus/Mimir**, **Loki** e **Grafana**. Inclui **padrões RED/USE**, **correlação** (trace\_id / correlation\_id / tenant\_id / site\_id), **amostragem**, **dashboards JSON**, **regras de alerta** e **exemplos de instrumentação** (NestJS e Go/Echo). Alinhado aos Manifestos 1 (NFR/SLOs) e 2–3 (Eventos/Segurança & LGPD).
+Este manifesto de observabilidade foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Inclui: **traces, métricas e logs** com **OpenTelemetry** (apps) → **Collector** → **Tempo/Jaeger**, **Prometheus/Mimir**, **Loki** e **Grafana**. Inclui **padrões RED/USE**, **correlação** (trace\_id / correlation\_id / tenant\_id / site\_id), **amostragem**, **dashboards JSON**, **regras de alerta** e **exemplos de instrumentação** (NestJS e Go/Echo).
+
+## 📊 Integração com Padrões de Observabilidade do Monorepo
+
+### Stack de Observabilidade Integrada
+- **Traces**: OpenTelemetry → Tempo/Jaeger com correlação ponta-a-ponta
+- **Métricas**: Prometheus/Mimir com exemplars para correlação
+- **Logs**: Loki com logs estruturados (Pino/Zap)
+- **Dashboards**: Grafana com painéis por domínio e tenant
+- **Alertas**: Regras Prometheus baseadas em SLOs
+
+### Padrões de Instrumentação Aplicados
+- **TypeScript**: Pino logger com traceId binding, OTel auto-instrumentation
+- **Go**: Zap logger com campos padrão, OTel SDK com propagators
+- **Cross-cutting**: Correlação de traces, métricas RED/USE, logs estruturados
 
 ---
 
@@ -575,6 +589,34 @@ export default function () {
 * **BFF/Serviços** exportam métricas RED por rota e **traces** com *baggage* `tenant_id/site_id`.
 * **Dashboards** refletem as **telas críticas** (e.g., *Minhas OS*, *Sync Mobile*, *Medições*).
 * **Alertas** mapeiam os **SLOs** do Manifesto 1 e **incidentes** do Manifesto 3.
+
+## 🔄 Integração com Padrões do Monorepo
+
+### Estrutura de Observabilidade Aplicada
+```
+obraflow/
+├── libs/
+│   ├── ts/otel-sdk/               # OTel setup (Node/Browser)
+│   ├── ts/logging-pino/           # Logger Pino com traceId
+│   └── go/pkg/otel/               # OTel setup Go
+├── observability/
+│   ├── otel-collector/            # Collector config
+│   ├── grafana/                   # Dashboards
+│   ├── prometheus/                # Rules e alerts
+│   └── loki/                      # Log config
+└── tools/scripts/observability/   # Scripts de setup
+```
+
+### Padrões de Instrumentação por Linguagem
+- **TypeScript**: OTel auto-instrumentation, Pino com traceId binding
+- **Go**: OTel SDK com propagators, Zap com campos padrão
+- **Cross-cutting**: Correlação de traces, métricas RED/USE, logs estruturados
+
+### Critérios de Aceite de Observabilidade
+- **Cada request** tem traceId visível ponta-a-ponta
+- **Dashboards** com p95/err rate por serviço e tenant
+- **Logs estruturados** com correlation_id, tenant_id, site_id
+- **Métricas RED/USE** padronizadas por domínio
 
 ---
 

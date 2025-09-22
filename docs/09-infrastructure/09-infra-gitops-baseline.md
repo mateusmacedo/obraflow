@@ -1,8 +1,23 @@
 # Manifesto 6 — **Infra/GitOps Baseline**
 
-*(Helm + Kustomize + ArgoCD “app-of-apps” + Istio/Linkerd + External Secrets + Policies + Autoscaling + Backup/DR + FinOps)*
+*(Helm + Kustomize + ArgoCD "app-of-apps" + Istio/Linkerd + External Secrets + Policies + Autoscaling + Backup/DR + FinOps)*
 
-A seguir vai o **pacote inicial de infraestrutura cloud-native** para o ObraFlow, pronto para ser versionado no repositório e aplicado via **GitOps**. O material estabelece **padrões de cluster**, **segurança**, **rede**, **segredos**, **observabilidade**, **autoscaling**, **quotas**, **backup/DR** e **custos** — coerente com os Manifestos 1–5.
+Este manifesto de infraestrutura foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Estabelece **padrões de cluster**, **segurança**, **rede**, **segredos**, **observabilidade**, **autoscaling**, **quotas**, **backup/DR** e **custos** — coerente com os Manifestos 1–5.
+
+## 🏗️ Integração com Padrões de Infraestrutura do Monorepo
+
+### Stack de Infraestrutura Integrada
+- **Orquestração**: Kubernetes com Helm + Kustomize + ArgoCD
+- **Service Mesh**: Istio/Linkerd com mTLS e políticas de rede
+- **Segredos**: External Secrets com AWS Secrets Manager/GCP SM
+- **Observabilidade**: OpenTelemetry → Tempo/Jaeger + Prometheus + Loki
+- **CI/CD**: GitHub Actions com GitOps e validação de infraestrutura
+
+### Padrões de Infraestrutura Aplicados
+- **IaC**: Helm charts padronizados com valores por ambiente
+- **GitOps**: ArgoCD com app-of-apps pattern
+- **Segurança**: Pod Security Standards, Network Policies, RBAC
+- **FinOps**: Labels de custo, quotas, autoscaling baseado em métricas
 
 ---
 
@@ -1309,6 +1324,33 @@ env:
 * **Segurança/LGPD (Manif. 3):** PodSecurity `restricted`, NetworkPolicy default-deny, External Secrets, SC encriptadas, Velero com retenção.
 * **Observabilidade (Manif. 4):** Collector/Prom/Loki/Tempo integrados; labels e exemplars coerentes.
 * **APIs (Manif. 5):** Istio fornece *rate-limit* e *circuit break* coerentes com a *API Governance*.
+
+## 🔄 Integração com Padrões do Monorepo
+
+### Estrutura de Infraestrutura Aplicada
+```
+obraflow/
+├── infra/
+│   ├── clusters/                    # Kustomize por ambiente
+│   ├── charts/                      # Helm charts padronizados
+│   ├── argo-apps/                   # ArgoCD applications
+│   └── scripts/                     # Scripts de automação
+├── .github/workflows/
+│   ├── cd-gitops.yml               # Pipeline de infraestrutura
+│   └── security-scan.yml           # Validação de segurança
+└── tools/scripts/infra/            # Scripts de infraestrutura
+```
+
+### Padrões de Infraestrutura por Linguagem
+- **TypeScript**: Helm charts com valores padronizados, validação de schemas
+- **Go**: Scripts de automação, validação de recursos Kubernetes
+- **Cross-cutting**: GitOps com ArgoCD, validação de políticas
+
+### Critérios de Aceite de Infraestrutura
+- **Recursos Kubernetes** validados com kubeconform
+- **Helm charts** com linting e validação de valores
+- **Políticas de segurança** aplicadas via Gatekeeper
+- **GitOps** funcionando com ArgoCD
 
 ---
 

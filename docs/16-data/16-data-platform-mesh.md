@@ -2,7 +2,7 @@
 
 *(Camadas, contratos de dados, domínios (mesh), qualidade, catálogo, privacidade, SLAs e exemplos executáveis)*
 
-Este pacote estabelece a **plataforma de dados operacional** do ObraFlow e o **modelo de Data Mesh**, cobrindo: **arquitetura de camadas (medallion)**, **contratos de dados** (esquemas versionados e políticas), **produtos de dados por domínio**, **ingestão CDC/streaming/batch**, **qualidade (tests/SLAs)**, **catálogo e linhagem**, **governança/LGPD**, **observabilidade**, **padrões de modelagem** (Lakehouse/SQL/dbt) e **exemplos prontos**.
+Este manifesto de plataforma de dados foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Estabelece a **plataforma de dados operacional** do ObraFlow e o **modelo de Data Mesh**, cobrindo: **arquitetura de camadas (medallion)**, **contratos de dados** (esquemas versionados e políticas), **produtos de dados por domínio**, **ingestão CDC/streaming/batch**, **qualidade (tests/SLAs)**, **catálogo e linhagem**, **governança/LGPD**, **observabilidade**, **padrões de modelagem** (Lakehouse/SQL/dbt) e **exemplos prontos**.
 
 ---
 
@@ -606,6 +606,30 @@ type Query {
 * **Manif. 10 (DR/BCP)**: *retention/backup* e restore parcial por partição.
 * **Manif. 11 (FinOps)**: *bytes scanned* e *cost per query*; otimizações via particionamento/iceberg optimize.
 * **Manif. 12 (AI/ML Ops)**: RAG indexa **gold/silver**; *feature store* consome **silver**; catálogos sincronizados.
+
+## 12.1) Integração com Padrões do Monorepo
+
+### Estrutura de Dados Aplicada
+```
+obraflow/
+├── libs/
+│   ├── ts/data-contracts/        # Contratos TypeScript
+│   ├── ts/data-quality/          # Validação e testes
+│   └── go/pkg/data/              # Contratos Go
+├── tools/
+│   ├── generators/data/          # Scaffolds de produtos de dados
+│   └── scripts/data/             # Scripts de migração
+└── .github/workflows/
+    ├── data-quality.yml          # Testes de qualidade
+    └── data-governance.yml       # Auditoria de governança
+```
+
+### Padrões Técnicos Integrados
+- **DDD**: Produtos de dados por domínio (Planning, Work-Management, etc.)
+- **CQRS+EDA**: Separação entre comandos e consultas de dados
+- **Clean Architecture**: Camadas de bronze/silver/gold
+- **Multi-tenant**: Segmentação por tenant/obra nos contratos
+- **Observabilidade**: Métricas de qualidade e linhagem de dados
 
 ---
 

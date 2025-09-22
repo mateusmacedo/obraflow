@@ -2,7 +2,7 @@
 
 *(ISO/IEC 27001:2022, SOC 2, ANPD — evidências, auditoria contínua e automações)*
 
-Entrega do pacote para **governança de controles**, **coleta de evidências** e **auditoria contínua** do ObraFlow. Conecta-se aos Manifestos 1–15 (segurança, dados, DR/BCP, FinOps, AI/ML, etc.).
+Este manifesto de compliance foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Estabelece a **governança de controles**, **coleta de evidências** e **auditoria contínua** do ObraFlow, conectando-se aos Manifestos 1–15 (segurança, dados, DR/BCP, FinOps, AI/ML, etc.).
 
 ---
 
@@ -308,6 +308,30 @@ jobs:
 * **Manif. 10**: DR/BCP → **Availability** (SOC2 A1; ISO A.5/A.8).
 * **Manif. 11**: evidências de FinOps (orçamentos/alertas) para **governança**.
 * **Manif. 12–14**: RAG/BI com **RLS/CLS**, DPIA, catálogos e linhagem como evidências.
+
+## 10.1) Integração com Padrões do Monorepo
+
+### Estrutura de Compliance Aplicada
+```
+obraflow/
+├── libs/
+│   ├── ts/compliance/            # Controles TypeScript
+│   ├── ts/audit/                 # Auditoria e evidências
+│   └── go/pkg/compliance/        # Controles Go
+├── tools/
+│   ├── generators/compliance/    # Scaffolds de controles
+│   └── scripts/compliance/       # Scripts de auditoria
+└── .github/workflows/
+    ├── compliance-scan.yml       # Verificação de controles
+    └── evidence-collect.yml      # Coleta de evidências
+```
+
+### Padrões Técnicos Integrados
+- **DDD**: Controles organizados por domínio (Security, Privacy, Operations)
+- **CQRS+EDA**: Separação entre auditoria e compliance
+- **Clean Architecture**: Camadas de evidências e controles
+- **Multi-tenant**: Segmentação por tenant/obra nos controles
+- **Observabilidade**: Métricas de compliance e auditoria
 
 ---
 

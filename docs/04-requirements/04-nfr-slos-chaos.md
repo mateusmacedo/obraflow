@@ -1,8 +1,24 @@
 # Manifesto 1 — **NFR Charter (ATAM) + SLIs/SLOs + Validação**
 
-*(ObraFlow · versão macro completa, pronta para colar no repositório)*
+*(ObraFlow · versão macro completa, integrada com padrões do monorepo multilíngue)*
 
-Abaixo segue o **pacote inicial** do manifesto de requisitos não-funcionais (NFR) com foco em **desempenho, disponibilidade, segurança, privacidade, observabilidade, manutenibilidade e custo**. Inclui: **charter em YAML**, guia explicativo, **SLIs/SLOs** e **regras Prometheus**, **esqueleto de testes de carga (k6)**, **experimentos de caos** e **checklist de aceite**. Ao final, confirme para eu **prosseguir para o Manifesto 2 (Catálogo de Eventos – AsyncAPI)**.
+Este manifesto de requisitos não-funcionais (NFR) foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Inclui: **charter em YAML**, guia explicativo, **SLIs/SLOs** e **regras Prometheus**, **esqueleto de testes de carga (k6)**, **experimentos de caos** e **checklist de aceite**.
+
+## 🏗️ Integração com Padrões do Monorepo
+
+### Stack Tecnológica Integrada
+- **Frontend**: Next.js 14 (App Router) + React Native/Expo (offline-first)
+- **Backend**: NestJS (BFF) + Go Echo + Fx + Watermill (microserviços)
+- **Observabilidade**: OpenTelemetry → Tempo/Jaeger + Prometheus + Loki + Grafana
+- **Dados**: PostgreSQL (RLS multi-tenant) + MongoDB + Redis + TimescaleDB
+- **CI/CD**: GitHub Actions + Nx + pnpm + Changesets
+
+### Padrões de Qualidade Aplicados
+- **Testes**: Cobertura ≥80% (unit + integration + e2e)
+- **Observabilidade**: TraceId ponta-a-ponta, métricas p95/p99
+- **Segurança**: SAST, SBOM, image scanning, dependency review
+- **Performance**: <100ms p95, >1000 RPS por tenant
+- **Compliance**: LGPD, auditoria, trilha de alterações
 
 ---
 
@@ -491,11 +507,44 @@ export default function () {
 
 ---
 
-## 7) Observações finais (alinhamento com C4/UX)
+## 7) Integração com Padrões do Monorepo
+
+### Estrutura de Diretórios Aplicada
+```
+obraflow/
+├── apps/
+│   ├── web-next/                  # Next.js 14 (App Router)
+│   ├── mobile-expo/               # React Native/Expo (offline-first)
+│   ├── bff-nest/                  # NestJS (API Gateway/BFF)
+│   └── svc-accounts-go/           # Go Echo + Fx + Watermill
+├── libs/
+│   ├── ts/framework-core/         # DDD patterns (Result<T,E>, DomainError)
+│   ├── ts/logging-pino/           # Logging estruturado com traceId
+│   ├── ts/otel-sdk/               # OpenTelemetry (Node/Browser)
+│   ├── ts/security/               # JWT, RBAC, guards
+│   └── go/pkg/tenancy/            # Multi-tenancy
+└── tools/generators/              # Nx generators customizados
+```
+
+### Padrões de Desenvolvimento Integrados
+- **TypeScript**: Nx + pnpm + Biome (lint/format) + Jest/Vitest
+- **Go**: go work (multi-módulo) + Taskfile + golangci-lint
+- **Cross-cutting**: Logging estruturado (Pino/Zap), OTel, correlação de traces
+- **Segurança**: JWT (RS256), RBAC, validação (Zod), SAST, SBOM
+- **CI/CD**: GitHub Actions com caching, path filters, previews
+
+### Critérios de Aceite do Monorepo
+- **Testes**: unit ≥80%; integração E2E com trace propagation validada
+- **Observabilidade**: cada request tem traceId visível ponta-a-ponta; dashboards com p95/err rate
+- **Segurança**: scans sem CVEs de severidade alta; segredos ausentes no repo
+- **DX**: generators funcionam; make/task unificados; nx graph atualizado
+
+## 8) Observações finais (alinhamento com C4/UX)
 
 * Os **SLIs/SLOs** aqui definidos cobrem os **fluxos críticos** descritos nas jornadas de UX (mobile e web).
 * A telemetria exigida (OTel/Prom/Loki) corresponde aos **contêineres** do C4 (BFF, Work-Management, etc.).
 * As **táticas** (queue/outbox, projections, bulkhead, rate-limit, circuit breaker) refletem as **decisões arquiteturais** (CQRS/ES, Sagas, multi-AZ).
+* Os **padrões do monorepo** garantem consistência e qualidade em todas as camadas da aplicação.
 
 ---
 

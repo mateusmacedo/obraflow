@@ -1,4 +1,17 @@
-Aqui vai uma descrição técnica detalhada dos principais manuais, documentos e instrumentos normativos usados em projetos de construção civil no Brasil que especificam serviços, composições, planejamento e medições, assim como seus propósitos e o tipo de informação que contêm. Se quiser, posso focar depois em um checklist ou mesmo em modelos prontos.
+# Contexto de Construção Civil Brasileira - ObraFlow
+
+Este documento apresenta uma descrição técnica detalhada dos principais manuais, documentos e instrumentos normativos usados em projetos de construção civil no Brasil, integrados com os padrões técnicos e arquiteturais do ObraFlow.
+
+## 🏗️ Arquitetura Técnica Integrada
+
+O ObraFlow foi projetado como um **monorepo multilíngue** (TypeScript + Go) seguindo padrões de **Domain-Driven Design (DDD)**, **Clean Architecture** e **CQRS+EDA**, otimizado para o contexto específico da construção civil brasileira.
+
+### Stack Tecnológica
+- **Frontend**: Next.js 14 (App Router) + React Native/Expo (mobile offline-first)
+- **Backend**: NestJS (BFF) + Go Echo + Fx + Watermill (microserviços)
+- **Observabilidade**: OpenTelemetry → Tempo/Jaeger + Prometheus + Loki + Grafana
+- **Dados**: PostgreSQL (RLS multi-tenant) + MongoDB + Redis + TimescaleDB
+- **CI/CD**: GitHub Actions + Nx + pnpm + Changesets
 
 ---
 
@@ -41,7 +54,46 @@ Para que haja clareza no planejamento, medição, execução, os documentos acim
 
 ---
 
-Se quiser, posso te preparar um **modelo de estrutura de documento** (por exemplo do “Caderno de Encargos + Memoriais + Especificações + Critérios de Medição”) pra usar como guia, ou mostrar exemplos de documentos normativos atuais pra sua região (SP ou nacional). Deseja que faça isso?
+## 🔄 Integração com Padrões Técnicos do ObraFlow
+
+### Mapeamento de Documentos para Domínios de Software
+
+| Documento Normativo | Domínio ObraFlow | Implementação Técnica |
+|---------------------|------------------|----------------------|
+| **Manual de Obras Públicas** | Planning + Work-Management | EAP/WBS, cronograma, curva S |
+| **Projeto Básico/Executivo** | Resource-Orchestration | Alocação de recursos, janelas |
+| **Caderno de Encargos** | Quality & Safety | Inspeções, NCs, procedimentos |
+| **Memorial Descritivo** | Measurement & Billing | Critérios de medição, regras |
+| **Manual de Uso/Manutenção** | Field-Ops | Checklists, diário de obra |
+
+### Padrões de Qualidade Integrados
+
+- **Testes**: Cobertura ≥80% (unit + integration + e2e)
+- **Observabilidade**: TraceId ponta-a-ponta, métricas p95/p99
+- **Segurança**: SAST, SBOM, image scanning, dependency review
+- **Performance**: <100ms p95, >1000 RPS por tenant
+- **Compliance**: LGPD, auditoria, trilha de alterações
+
+### Estrutura de Monorepo Aplicada
+
+```
+obraflow/
+├── apps/
+│   ├── web-next/              # Dashboard executivo
+│   ├── mobile-expo/           # Campo offline-first
+│   ├── bff-nest/              # API Gateway
+│   └── svc-accounts-go/       # Microserviços Go
+├── libs/
+│   ├── ts/framework-core/     # DDD patterns
+│   ├── ts/logging-pino/       # Logging estruturado
+│   ├── ts/otel-sdk/           # Observabilidade
+│   └── go/pkg/tenancy/        # Multi-tenancy
+└── tools/generators/          # Scaffolds padronizados
+```
+
+---
+
+Se quiser, posso te preparar um **modelo de estrutura de documento** (por exemplo do "Caderno de Encargos + Memoriais + Especificações + Critérios de Medição") pra usar como guia, ou mostrar exemplos de documentos normativos atuais pra sua região (SP ou nacional). Deseja que faça isso?
 
 [1]: https://www.gov.br/compras/pt-br/acesso-a-informacao/manuais/manual-obras-publicas-edificacoes-praticas-da-seap-manuais/manual_obraspublicas_construcao.pdf?utm_source=chatgpt.com "Manual de Obras Públicas-Edificações - Portal Gov.br"
 [2]: https://www.gov.br/compras/pt-br/acesso-a-informacao/manuais/manual-obras-publicas-edificacoes-praticas-da-seap-manuais/manual_obraspublicas_projeto.pdf?utm_source=chatgpt.com "Manual de Obras Públicas-Edificações - Portal Gov.br"

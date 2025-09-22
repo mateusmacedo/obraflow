@@ -2,7 +2,21 @@
 
 *(SemVer, Branching, CI/CD, Feature Flags, Notas de Release, Migrações, Promoção entre Ambientes, Congelamentos por SLO)*
 
-Pacote normativo e operacional para **releases previsíveis**, **compatibilidade**, **rollouts seguros** e **rastreabilidade** ponta-a-ponta. Alinhado aos Manifestos 1–7 (SLO/NFR, Eventos, Segurança, Observabilidade, API Gov, Infra/GitOps, Test Strategy).
+Este manifesto de operações foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Estabelece **releases previsíveis**, **compatibilidade**, **rollouts seguros** e **rastreabilidade** ponta-a-ponta.
+
+## 🚀 Integração com Padrões de Operações do Monorepo
+
+### Stack de Operações Integrada
+- **Versionamento**: SemVer com conventional commits e semantic-release
+- **CI/CD**: GitHub Actions com Nx + pnpm + Changesets
+- **Feature Flags**: OpenFeature com providers configuráveis
+- **GitOps**: ArgoCD com promoção entre ambientes
+- **Observabilidade**: SLOs como gates de release
+
+### Padrões de Operações Aplicados
+- **TypeScript**: Changesets para versionamento independente
+- **Go**: Versionamento via tags e releases automáticos
+- **Cross-cutting**: Conventional commits, feature flags, SLO gates
 
 ---
 
@@ -444,6 +458,34 @@ jobs:
 * **Manif. 5 (API Gov)**: SemVer de contratos, depreciações documentadas.
 * **Manif. 6 (Infra/GitOps)**: promoção via ArgoCD, blue/green/canary.
 * **Manif. 7 (Tests)**: gates de testes, sintéticos e asserts SLO.
+
+## 🔄 Integração com Padrões do Monorepo
+
+### Estrutura de Operações Aplicada
+```
+obraflow/
+├── .changeset/                     # Versionamento independente TS
+├── .github/workflows/
+│   ├── release.yml                 # Semantic release
+│   ├── promote-hml-to-prd.yml     # Promoção entre ambientes
+│   └── release-freeze-by-slo.yml  # Congelamento por SLO
+├── release/
+│   ├── feature-flags/              # OpenFeature configs
+│   ├── migrations/                 # DB migration templates
+│   └── rollout/                    # Estratégias de rollout
+└── tools/scripts/release/          # Scripts de release
+```
+
+### Padrões de Operações por Linguagem
+- **TypeScript**: Changesets para versionamento independente, semantic-release
+- **Go**: Versionamento via tags, releases automáticos via GitHub Actions
+- **Cross-cutting**: Conventional commits, feature flags, SLO gates
+
+### Critérios de Aceite de Operações
+- **Releases automáticos** via conventional commits
+- **Feature flags** funcionando em todos os ambientes
+- **SLOs** como gates de release
+- **Promoção entre ambientes** via GitOps
 
 ---
 

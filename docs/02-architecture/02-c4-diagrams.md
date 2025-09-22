@@ -278,6 +278,48 @@ Rel(graf, loki, "Dashboards (logs)")
 * **IA**: orquestrador dedicado (RAG, otimização de alocação, visão computacional) + **Vector Store**.
 * **Observabilidade**: telemetria unificada (traces/métricas/logs) e painéis operacionais/negócio.
 
+## 🏗️ Estrutura do Monorepo (Baseada no @archive/)
+
+### Organização de Diretórios
+```
+obraflow/
+├── apps/
+│   ├── web-next/                  # Next.js 14 (App Router)
+│   ├── mobile-expo/               # React Native/Expo (offline-first)
+│   ├── bff-nest/                  # NestJS (API Gateway/BFF)
+│   └── svc-accounts-go/           # Go Echo + Fx + Watermill
+├── libs/
+│   ├── ts/
+│   │   ├── framework-core/         # DDD patterns (Result<T,E>, DomainError)
+│   │   ├── logging-pino/           # Logging estruturado com traceId
+│   │   ├── otel-sdk/               # OpenTelemetry (Node/Browser)
+│   │   ├── security/               # JWT, RBAC, guards
+│   │   └── http-client/            # Cliente HTTP com retry & tracing
+│   └── go/
+│       ├── pkg/
+│       │   ├── logging/            # Zap logger wrappers
+│       │   ├── otel/               # OTel setup
+│       │   └── events/             # Contratos para Watermill
+│       └── internal/               # Utilitários compartilhados
+├── tools/
+│   ├── generators/                 # Nx generators customizados
+│   └── scripts/                    # Scripts de automação
+├── .changeset/                     # Versionamento independente TS
+├── .github/workflows/              # Pipelines CI/CD
+├── Taskfile.yml                    # Tasks unificadas (Go/gerais)
+├── go.work                         # Multi-módulo Go
+├── package.json                    # pnpm workspaces
+├── nx.json                         # Nx config
+└── biome.json                      # Lint/format TS
+```
+
+### Padrões de Desenvolvimento
+- **TypeScript**: Nx + pnpm + Biome (lint/format) + Jest/Vitest
+- **Go**: go work (multi-módulo) + Taskfile + golangci-lint
+- **Cross-cutting**: Logging estruturado (Pino/Zap), OTel, correlação de traces
+- **Segurança**: JWT (RS256), RBAC, validação (Zod), SAST, SBOM
+- **CI/CD**: GitHub Actions com caching, path filters, previews
+
 ---
 
 Se quiser, eu **estendo** com:

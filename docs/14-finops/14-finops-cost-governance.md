@@ -2,7 +2,21 @@
 
 *(Unit economics, showback/chargeback por tenant/obra, orçamentos, otimização contínua, automações e painéis)*
 
-Este pacote estabelece a governança de custos do ObraFlow em ambiente cloud-native. Abrange **modelo de alocação**, **taxonomia de custos**, **métricas (UoM)**, **painéis**, **alertas**, **orçamentos**, **análises (Athena/BigQuery)**, **OpenCost/Kubecost**, **práticas de otimização** (compute, storage, rede, dados gerenciados), **ciclos FinOps** e **integração com SLOs** e **GitOps**. Coeso com os Manifestos 1–10.
+Este manifesto de FinOps foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Estabelece a governança de custos do ObraFlow em ambiente cloud-native, abrangendo **modelo de alocação**, **taxonomia de custos**, **métricas (UoM)**, **painéis**, **alertas**, **orçamentos**, **análises (Athena/BigQuery)**, **OpenCost/Kubecost**, **práticas de otimização** e **integração com SLOs** e **GitOps**.
+
+## 💰 Integração com Padrões de FinOps do Monorepo
+
+### Stack de FinOps Integrada
+- **Alocação**: OpenCost/Kubecost com labels padronizados
+- **Analytics**: AWS CUR + Athena / GCP Billing + BigQuery
+- **Dashboards**: Grafana com painéis por tenant e componente
+- **Automação**: CI/CD gates de custo, ADRs de custo
+- **Governança**: RBAC, taxonomia, orçamentos e alertas
+
+### Padrões de FinOps Aplicados
+- **TypeScript**: Scripts de análise de custo, dashboards Grafana
+- **Go**: Ferramentas de otimização, análise de recursos
+- **Cross-cutting**: Labels de custo, métricas de negócio, SLOs
 
 ---
 
@@ -414,5 +428,33 @@ Métricas de sucesso: <redução %, payback em meses>
 2. Publicar os **dashboards** e configurar **alerts** (anomalia e orçamento).
 3. Rodar o primeiro **Rightsizing Day** (playbook) e registrar **ADRs**.
 4. Integrar **UoM** ao *roadmap* de produto (metas de R\$/OS).
+
+## 🔄 Integração com Padrões do Monorepo
+
+### Estrutura de FinOps Aplicada
+```
+obraflow/
+├── finops/
+│   ├── governance/                  # Políticas e RBAC
+│   ├── allocation/                  # OpenCost/Kubecost configs
+│   ├── dashboards/                  # Grafana dashboards
+│   ├── alerts/                      # Prometheus rules
+│   ├── analytics/                   # CUR/BigQuery queries
+│   └── playbooks/                   # Playbooks de otimização
+├── .github/workflows/
+│   └── ci-cost-guard.yml           # Gates de custo
+└── tools/scripts/finops/           # Scripts de análise
+```
+
+### Padrões de FinOps por Linguagem
+- **TypeScript**: Dashboards Grafana, scripts de análise, ADRs de custo
+- **Go**: Ferramentas de otimização, análise de recursos, métricas
+- **Cross-cutting**: Labels de custo, métricas de negócio, SLOs
+
+### Critérios de Aceite de FinOps
+- **Labels de custo** aplicados em todos os recursos
+- **Dashboards** funcionando com métricas de negócio
+- **Gates de custo** ativos no CI/CD
+- **ADRs de custo** para mudanças significativas
 
 Deseja que eu avance para o **Manifesto 12 — *AI/ML Ops para Assistentes & Otimização de Recursos (IA aplicada ao ObraFlow)***, cobrindo recomendações de alocação, previsões de consumo e copilots de obra (incl. custos de inferência/treino), ou prefere ajustar algo neste FinOps antes?

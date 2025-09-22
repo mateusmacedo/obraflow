@@ -1,8 +1,24 @@
 # Manifesto 3 — **Threat Model + DPIA (LGPD) + Políticas de Segurança**
 
-*(ObraFlow · pacote inicial completo, pronto para colar no repositório)*
+*(ObraFlow · pacote inicial completo, integrado com padrões do monorepo multilíngue)*
 
-A seguir entrego o **conjunto de artefatos** para modelagem de ameaças (STRIDE), privacidade (LINDDUN/LGPD), inventário de dados, DPIA, políticas e controles, com **templates executáveis** (OPA/Rego), **diagramas PlantUML** (DFD/Sequence), **matriz de controles** e **checklists**. O material está alinhado aos Manifestos 1 (NFR/SLOs) e 2 (Catálogo de Eventos).
+Este manifesto de segurança e privacidade foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Inclui: modelagem de ameaças (STRIDE), privacidade (LINDDUN/LGPD), inventário de dados, DPIA, políticas e controles, com **templates executáveis** (OPA/Rego), **diagramas PlantUML** (DFD/Sequence), **matriz de controles** e **checklists**.
+
+## 🔒 Integração com Padrões de Segurança do Monorepo
+
+### Stack de Segurança Integrada
+- **Autenticação**: OIDC/OAuth2 com JWT (RS256), tokens curtos, JTI
+- **Autorização**: RBAC/ABAC com OPA/Rego, RLS no PostgreSQL
+- **Criptografia**: TLS 1.3+, mTLS mesh, KMS para chaves
+- **Auditoria**: Logs estruturados com correlation_id, trilha imutável
+- **Compliance**: LGPD, ISO 27001, SOC 2, NIST framework
+
+### Padrões de Segurança Aplicados
+- **SAST**: CodeQL, Semgrep para análise estática
+- **SBOM**: Syft para inventário de dependências
+- **Image Scanning**: Trivy para vulnerabilidades em containers
+- **Dependency Review**: Dependabot + pnpm audit + govulncheck
+- **Secret Scanning**: Gitleaks para detecção de segredos
 
 ---
 
@@ -428,7 +444,34 @@ mask(v) = v { not is_string(v) }
 
 ---
 
-## 14) Como validar no ciclo
+## 14) Integração com Padrões do Monorepo
+
+### Estrutura de Segurança Aplicada
+```
+obraflow/
+├── libs/
+│   ├── ts/security/               # JWT, RBAC, guards, validação
+│   └── go/pkg/security/           # JWT validation, RBAC middleware
+├── tools/
+│   ├── generators/security/       # Scaffolds de segurança
+│   └── scripts/security/          # Scripts de auditoria
+└── .github/workflows/
+    ├── security-scan.yml          # SAST, SBOM, image scanning
+    └── compliance-check.yml       # LGPD, auditoria
+```
+
+### Padrões de Segurança por Linguagem
+- **TypeScript**: JWT (RS256), RBAC decorators (Nest), guards, validação (Zod)
+- **Go**: JWT validation, RBAC middleware, input validation, security headers
+- **Cross-cutting**: Logging estruturado (Pino/Zap), OTel, correlação de traces
+
+### Critérios de Aceite de Segurança
+- **Pipelines falham** na presença de segredos ou CVEs bloqueantes
+- **Scans sem CVEs** de severidade alta
+- **Segredos ausentes** no repositório
+- **Políticas de segurança** aplicadas via OPA/Rego
+
+## 15) Como validar no ciclo
 
 1. Renderize os diagramas (`*.puml`).
 2. Revise `data-inventory.md`/`ropa.md` com os times.
@@ -436,6 +479,7 @@ mask(v) = v { not is_string(v) }
 4. Suba as **políticas** para o repositório e **aplique OPA** no BFF/gateway.
 5. Registre evidências na `controls-matrix.yaml`.
 6. Use `checklists.md` em todo **release** e **pós-incidente**.
+7. **Valide padrões do monorepo** em cada commit e release.
 
 ---
 

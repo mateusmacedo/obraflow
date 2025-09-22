@@ -2,7 +2,7 @@
 
 *(Mobile + Web, Cloud-Native, IA-Ready, Multi-Tenant)*
 
-Abaixo está uma proposta **end-to-end** de UX/UI que conecta **design do produto** com **system design** e **implementação**. O material cobre **arquitetura de informação**, **navegação**, **design system (tokens + componentes)**, **padrões de interação (offline-first, mapas, scanner, anotações)**, **telas prioritárias**, **acessibilidade**, **instrumentação/analytics**, **segurança/LGPD**, **entrega e handoff (Figma/Storybook/Cypress)** e **roadmap de versões**.
+Este projeto de UX/UI foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Conecta **design do produto** com **system design** e **implementação**, cobrindo **arquitetura de informação**, **navegação**, **design system (tokens + componentes)**, **padrões de interação (offline-first, mapas, scanner, anotações)**, **telas prioritárias**, **acessibilidade**, **instrumentação/analytics**, **segurança/LGPD**, **entrega e handoff (Figma/Storybook/Cypress)** e **roadmap de versões**.
 
 ---
 
@@ -285,6 +285,33 @@ export interface AllocationTimelineProps {
 * **MVP (Fases 0–1)**: Minhas OS (mobile), Apontamentos, Scanner, OS Kanban (web), Alocação básica, Recebimento em canteiro, Inspeção simples, *skeletons* e offline-first.
 * **V2 (Fases 2–3)**: Gantt + Curva S, ProcurementBoard completo, MeasurementRun, IA (alocação e risco), Copiloto RAG.
 * **V3 (Fases 4–5)**: Visão computacional (EPI), simulações *what-if* avançadas, *white-label* completo, relatórios executivos customizáveis.
+
+## 13) Integração com Padrões do Monorepo
+
+### Estrutura de UX/UI Aplicada
+```
+obraflow/
+├── apps/
+│   ├── web-next/                  # Next.js 14 (App Router)
+│   └── mobile-expo/               # React Native/Expo
+├── libs/
+│   ├── ts/ui-components/          # Design System
+│   ├── ts/ui-tokens/              # Design Tokens
+│   └── ts/ui-utils/               # Utilitários de UI
+├── tools/
+│   ├── generators/ui/             # Scaffolds de componentes
+│   └── scripts/ui/                # Scripts de build
+└── .github/workflows/
+    ├── ui-tests.yml               # Testes de UI
+    └── ui-build.yml               # Build de assets
+```
+
+### Padrões Técnicos Integrados
+- **DDD**: Componentes organizados por domínio (Planning, Work-Management, etc.)
+- **CQRS+EDA**: Separação entre comandos e consultas de UI
+- **Clean Architecture**: Camadas de apresentação e aplicação
+- **Multi-tenant**: Temas e componentes por tenant/obra
+- **Observabilidade**: Métricas de UX e performance
 
 ---
 

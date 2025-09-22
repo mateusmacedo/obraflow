@@ -2,7 +2,22 @@
 
 *(RAG + Recomendação + Previsão + Visão Computacional + MLOps + Guardrails + Custos de Inferência)*
 
-A seguir entrego o **pacote inicial completo** para implantar capacidades de IA no ObraFlow (assistentes para obra, alocação inteligente, previsão de consumo, copilotos de medição e segurança). O material abrange **casos de uso**, **arquitetura**, **pipelines MLOps**, **feature store**, **registry**, **inferência online** (RAG/LLM), **avaliação**, **observabilidade de modelos**, **guardrails/LGPD**, **custo & performance**, com exemplos de **TypeScript/NestJS** e **Go**.
+Este manifesto de IA/ML foi **integrado com os padrões técnicos** definidos no plano de ação do monorepo, garantindo alinhamento entre arquitetura, desenvolvimento e operações. Estabelece capacidades de IA no ObraFlow (assistentes para obra, alocação inteligente, previsão de consumo, copilotos de medição e segurança), abrangendo **casos de uso**, **arquitetura**, **pipelines MLOps**, **feature store**, **registry**, **inferência online** (RAG/LLM), **avaliação**, **observabilidade de modelos**, **guardrails/LGPD**, **custo & performance**.
+
+## 🤖 Integração com Padrões de IA/ML do Monorepo
+
+### Stack de IA/ML Integrada
+- **AI Gateway**: NestJS com RAG, guardrails e métricas de custo
+- **Vector Store**: pgvector/OpenSearch com RLS por tenant
+- **Feature Store**: Feast para materialização de features
+- **Model Registry**: MLflow para versionamento e staging
+- **Pipelines**: Argo/Kubeflow para treino e avaliação
+- **Observabilidade**: OpenTelemetry com métricas de IA
+
+### Padrões de IA/ML Aplicados
+- **TypeScript**: NestJS AI Gateway, providers de LLM/embeddings
+- **Go**: Predictor ARIMA, serviços de previsão
+- **Cross-cutting**: RAG, guardrails, métricas de custo, observabilidade
 
 ---
 
@@ -866,5 +881,39 @@ groups:
 2. **Materializar** features e rodar o primeiro **treino** do recomendador → A/B em 10% dos sites.
 3. **Publicar dashboards** de IA e **alertas** de custo/latência.
 4. Ajustar SLOs/custos, promover **canary** e planejar integração com **suprimentos** (forecast→PO).
+
+## 🔄 Integração com Padrões do Monorepo
+
+### Estrutura de IA/ML Aplicada
+```
+obraflow/
+├── ai-mlops/
+│   ├── use-cases/                   # Casos de uso de IA
+│   ├── architecture/                # Arquitetura e diagramas
+│   ├── data/                        # Schemas e labeling
+│   ├── pipelines/                   # Argo/Kubeflow workflows
+│   ├── feature-store/               # Feast configs
+│   ├── registry/                    # MLflow configs
+│   ├── inference/                   # AI Gateway NestJS
+│   ├── prompts/                     # Prompts e ferramentas
+│   ├── eval/                        # Avaliação e datasets
+│   ├── monitoring/                  # Observabilidade de modelos
+│   ├── governance/                  # Segurança e LGPD
+│   └── finops/                      # Custos e AB testing
+├── apps/
+│   └── ai-gateway-nest/             # AI Gateway NestJS
+└── tools/scripts/ai-ml/             # Scripts de IA/ML
+```
+
+### Padrões de IA/ML por Linguagem
+- **TypeScript**: NestJS AI Gateway, providers de LLM/embeddings, RAG service
+- **Go**: Predictor ARIMA, serviços de previsão, HTTP handlers
+- **Cross-cutting**: RAG, guardrails, métricas de custo, observabilidade
+
+### Critérios de Aceite de IA/ML
+- **AI Gateway** funcionando com RAG e guardrails
+- **Pipelines MLOps** automatizados via Argo/Kubeflow
+- **Observabilidade** de modelos com métricas de custo
+- **Feature flags** para ativação por tenant
 
 Se estiver de acordo, posso seguir para o **Manifesto 13 — *Data Platform & Mesh Operacional (camadas, contratos de dados, qualidade, catálogo)*** ou ajusto algum componente deste pacote de IA/ML Ops.
