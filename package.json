@@ -54,7 +54,7 @@
     "lint-staged": "^16.1.6",
     "nx": "20.8.2",
     "tslib": "^2.3.0",
-    "typescript": "~5.7.2",
+    "typescript": "~5.9.2",
     "vite": "^6.0.0",
     "vitest": "^3.0.0"
   },
@@ -67,8 +67,8 @@
     "@opentelemetry/instrumentation-http": "^0.205.0",
     "@opentelemetry/instrumentation-nestjs-core": "^0.51.0",
     "@opentelemetry/sdk-node": "^0.205.0",
-    "next": "~15.2.4",
-    "react": "19.0.0",
+    "next": "~15.5.3",
+    "react": "19.1.1",
     "react-dom": "19.0.0"
   }
 }
