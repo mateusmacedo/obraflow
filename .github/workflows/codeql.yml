@@ -70,6 +70,10 @@ jobs:
   semgrep:
     name: Semgrep Analysis
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -84,10 +88,11 @@ jobs:
             p/javascript
             p/typescript
             p/go
-          generateSarif: "1"
 
       - name: Upload Semgrep results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: semgrep.sarif
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
