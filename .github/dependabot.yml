@@ -7,9 +7,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 10
     reviewers:
       - "mmanjos"
@@ -43,9 +41,7 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/services/planning-service"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 5
     reviewers:
       - "mmanjos"
@@ -62,9 +58,7 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/services/work-service"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 5
     reviewers:
       - "mmanjos"
@@ -81,9 +75,7 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/services/resource-service"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 5
     reviewers:
       - "mmanjos"
@@ -101,9 +93,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 5
     reviewers:
       - "mmanjos"
@@ -120,9 +110,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/services/planning-service"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 3
     reviewers:
       - "mmanjos"
@@ -139,9 +127,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/services/work-service"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 3
     reviewers:
       - "mmanjos"
@@ -158,9 +144,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/services/resource-service"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "never"
     open-pull-requests-limit: 3
     reviewers:
       - "mmanjos"
