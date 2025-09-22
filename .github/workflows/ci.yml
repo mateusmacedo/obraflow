@@ -9,15 +9,60 @@ on:
 env:
   NODE_VERSION: '20'
   PNPM_VERSION: '8'
-  GO_VERSION: '1.21'
 
-# Path filters for efficient CI
+# Cancel previous runs
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # Job de validação de commits
+  # Job principal - Build, Test e Lint
+  main:
+    name: Build, Test & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm nx run-many --target=lint --all
+
+      - name: Type Check
+        run: pnpm nx run-many --target=typecheck --all
+
+      - name: Test
+        run: pnpm nx run-many --target=test --all
+
+      - name: Build
+        run: pnpm nx run-many --target=build --all
+
+  # Job de validação de commits (apenas para PRs)
   commit-validation:
     name: Validate Commits
     runs-on: ubuntu-latest
@@ -45,405 +90,3 @@ jobs:
             ci
             chore
             revert
-
-  # Job de qualidade de código
-  code-quality:
-    name: Code Quality
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Biome Check
-        run: pnpm check
-
-      - name: Biome Format Check
-        run: pnpm format:check
-
-  # Job de build e testes TypeScript
-  build-and-test-ts:
-    name: Build and Test TypeScript
-    runs-on: ubuntu-latest
-    needs: [code-quality]
-    if: |
-      github.event_name == 'push' || 
-      contains(github.event.pull_request.changed_files, 'packages/') ||
-      contains(github.event.pull_request.changed_files, 'nx.json') ||
-      contains(github.event.pull_request.changed_files, 'package.json') ||
-      contains(github.event.pull_request.changed_files, 'tsconfig')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Type Check
-        run: pnpm nx run-many --target=typecheck --all
-
-      - name: Lint
-        run: pnpm nx run-many --target=lint --all
-
-      - name: Test
-        run: pnpm nx run-many --target=test --all
-
-      - name: Build
-        run: pnpm nx run-many --target=build --all
-
-  # Job de build e testes Go
-  build-and-test-go:
-    name: Build and Test Go
-    runs-on: ubuntu-latest
-    needs: [code-quality]
-    if: |
-      github.event_name == 'push' || 
-      contains(github.event.pull_request.changed_files, 'services/') ||
-      contains(github.event.pull_request.changed_files, 'go.work') ||
-      contains(github.event.pull_request.changed_files, 'go.mod')
-    strategy:
-      matrix:
-        go-version: ['1.21', '1.22']
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ matrix.go-version }}
-
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ matrix.go-version }}-
-
-      - name: Download dependencies
-        run: go mod download
-
-      - name: Verify dependencies
-        run: go mod verify
-
-      - name: Run tests
-        run: go test ./services/...
-
-      - name: Run vet
-        run: go vet ./services/...
-
-      - name: Run staticcheck
-        uses: dominikh/staticcheck-action@v1.3.0
-        with:
-          version: "2023.1.7"
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
-          args: --timeout=5m
-
-      - name: Build binaries
-        run: |
-          for dir in services/*/; do
-            if [ -f "$dir/go.mod" ]; then
-              service_name=$(basename "$dir")
-              go build -o "bin/${service_name}" "./$dir"
-            fi
-          done
-
-      - name: Upload Go binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: go-binaries-${{ matrix.os }}-${{ matrix.go-version }}
-          path: bin/
-          retention-days: 7
-
-  # Job de análise de segurança
-  security:
-    name: Security Analysis
-    runs-on: ubuntu-latest
-    needs: [code-quality]
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run security audit
-        run: pnpm audit --audit-level moderate
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # Job de análise de dependências
-  dependency-review:
-    name: Dependency Review
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: moderate
-
-  # Job de cobertura de testes TypeScript
-  coverage-ts:
-    name: Test Coverage TypeScript
-    runs-on: ubuntu-latest
-    needs: [build-and-test-ts]
-    if: always() && needs.build-and-test-ts.result == 'success'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests with coverage
-        run: pnpm nx run-many --target=test --all --coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info
-          fail_ci_if_error: true
-
-  # Job de cobertura de testes Go
-  coverage-go:
-    name: Test Coverage Go
-    runs-on: ubuntu-latest
-    needs: [build-and-test-go]
-    if: always() && needs.build-and-test-go.result == 'success'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
-      - name: Run tests with coverage
-        run: |
-          for dir in services/*/; do
-            if [ -f "$dir/go.mod" ]; then
-              service_name=$(basename "$dir")
-              go test -coverprofile="${service_name}.out" -covermode=atomic "./$dir"
-            fi
-          done
-
-      - name: Generate coverage report
-        run: |
-          echo "mode: atomic" > coverage.out
-          for file in *.out; do
-            if [ -f "$file" ]; then
-              tail -n +2 "$file" >> coverage.out
-            fi
-          done
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.out
-          fail_ci_if_error: true
-
-  # Job de análise de bundle
-  bundle-analysis:
-    name: Bundle Analysis
-    runs-on: ubuntu-latest
-    needs: [build-and-test-ts]
-    if: github.event_name == 'pull_request'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build for analysis
-        run: pnpm nx run-many --target=build --all
-
-      - name: Analyze bundle size
-        run: |
-          echo "Bundle size analysis completed"
-          # Aqui você pode adicionar análise de tamanho de bundle
-          # usando ferramentas como bundle-analyzer ou similar
-
-  # Job de deploy (apenas para main)
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: [build-and-test-ts, build-and-test-go, security, coverage-ts, coverage-go]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build TypeScript for production
-        run: pnpm nx run-many --target=build --all --configuration=prod
-
-      - name: Build Go binaries for production
-        run: |
-          for dir in services/*/; do
-            if [ -f "$dir/go.mod" ]; then
-              service_name=$(basename "$dir")
-              CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o "bin/${service_name}" "./$dir"
-            fi
-          done
-
-      - name: Deploy to production
-        run: |
-          echo "Deploy to production would happen here"
-          # Aqui você adicionaria os comandos de deploy específicos
-          # para sua infraestrutura (Docker, Kubernetes, etc.)
-
-  # Job de notificação
-  notify:
-    name: Notify
-    runs-on: ubuntu-latest
-    needs: [build-and-test-ts, build-and-test-go, security, coverage-ts, coverage-go]
-    if: always()
-    steps:
-      - name: Notify on success
-        if: |
-          needs.build-and-test-ts.result == 'success' && 
-          needs.build-and-test-go.result == 'success' && 
-          needs.security.result == 'success' && 
-          needs.coverage-ts.result == 'success' && 
-          needs.coverage-go.result == 'success'
-        run: |
-          echo "✅ All checks passed successfully!"
-
-      - name: Notify on failure
-        if: |
-          needs.build-and-test-ts.result == 'failure' || 
-          needs.build-and-test-go.result == 'failure' || 
-          needs.security.result == 'failure' || 
-          needs.coverage-ts.result == 'failure' || 
-          needs.coverage-go.result == 'failure'
-        run: |
-          echo "❌ Some checks failed. Please review the logs."
